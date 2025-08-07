@@ -27,5 +27,5 @@ export default defineConfig({
       }
     ]
   },
-  site: '',
+  site: 'https://lodging-cocha.com',
 });
