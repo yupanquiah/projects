@@ -1,0 +1,19 @@
+---
+import Navbar from "@components/Navbar.astro";
+import Section from "@components/Section.astro";
+
+import Brand from "@assets/brand.svg";
+---
+
+<header class="w-full">
+  <Section class="flex justify-between items-center font-poppins">
+    <Brand width={200} />
+    <Navbar />
+    <a
+      href="#"
+      class="font-medium text-lg py-1.5 px-3 bg-[#DF6951] rounded text-white hover:opacity-90 transition-opacity duration-200"
+    >
+      Reservar
+    </a>
+  </Section>
+</header>
