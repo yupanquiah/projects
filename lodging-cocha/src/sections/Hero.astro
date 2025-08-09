@@ -1,0 +1,24 @@
+---
+import Section from "@components/Section.astro";
+
+import Wave from "@assets/wave.svg";
+---
+
+<div class="w-full">
+  <Section
+    class="flex flex-col items-start py-16 space-y-4 font-poppins text-white"
+  >
+    <div class="relative">
+      <Wave class="absolute inset-0 -left-2 -top-1" />
+      <h2 class="text-6xl font-bold">Hospedaje</h2>
+      <h1 class="text-8xl font-bold">Cocha</h1>
+    </div>
+    <p class="text-3xl font-normal text-pretty">
+      Bienvenido a nuestro sitio web de hospedaje. Aquí encontrarás las mejores
+      opciones para tu estadía.
+    </p>
+    <button class="mt-8 border border-white p-2.5 rounded font-medium text-lg"
+      >Leer más --></button
+    >
+  </Section>
+</div>
