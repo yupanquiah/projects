@@ -1,11 +1,22 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "@layouts/Layout.astro";
+
+import Footer from "@sections/Footer.astro";
+import Header from "@sections/Header.astro";
+import Hero from "@sections/Hero.astro";
+import Welcome from "@sections/Welcome.astro";
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout>
-	<Welcome />
+  <div
+    class="w-full relative z-0 flex flex-col items-start space-y-10 py-10 before:bg-[url(/src/assets/background.png)] before:absolute before:inset-0 before:bg-cover before:bg-center before:bg-no-repeat before:-z-10 before:w-full before:brightness-75 before:sepia-0 before:saturate-150"
+  >
+    <Header />
+    <Hero />
+  </div>
+  <Welcome />
+  <Footer />
 </Layout>
