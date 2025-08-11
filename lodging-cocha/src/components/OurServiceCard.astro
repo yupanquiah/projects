@@ -1,0 +1,32 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+interface Props {
+  icon: ImageMetadata;
+  alt: string;
+  title: string;
+  description: string;
+}
+
+const { icon, alt, title, description } = Astro.props;
+---
+
+<article
+  class="flex flex-col items-center border rounded text-center p-4 border-[#5E6282]/30 shadow-md"
+>
+  <header class="relative z-0">
+    <Image
+      class="p-2 mb-3 aspect-square object-cover align-middle"
+      width={100}
+      src={icon}
+      alt={alt}
+    />
+    <h4 class="text-xl font-semibold text-[#1E1D4C]">{title}</h4>
+    <div class="w-20 h-20 bg-[#FFF1DA] rounded-lg absolute top-0 right-0 -z-10">
+    </div>
+  </header>
+  <main class="py-2">
+    <p class="text-base font-medium text-[#5E6282]">{description}</p>
+  </main>
+</article>
