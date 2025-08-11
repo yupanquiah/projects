@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 
+import Banner from "@sections/Banner.astro";
 import Footer from "@sections/Footer.astro";
 import Header from "@sections/Header.astro";
 import Hero from "@sections/Hero.astro";
@@ -17,5 +18,10 @@ import Welcome from "@sections/Welcome.astro";
   </div>
   <Welcome />
   <OurService />
+  <div
+    class="w-full h-96 relative z-0 before:bg-[url(/src/assets/img/banner.png)] py-10 before:absolute before:inset-0 before:bg-cover before:bg-center before:bg-no-repeat before:-z-10 before:w-full before:brightness-75 before:sepia-0 before:saturate-150"
+  >
+    <Banner />
+  </div>
   <Footer />
 </Layout>
