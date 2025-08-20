@@ -1,0 +1,120 @@
+---
+import RoomCard from "@components/RoomCard.astro";
+import Section from "@components/Section.astro";
+
+import Bed from "@assets/img/card.png";
+
+const RoomData = [
+  {
+    src: Bed,
+    alt: "Cama",
+    title: "Habitación con cama",
+    currency: "USD",
+    price: 100,
+    days: 2,
+    beds: 1,
+    typeOfBed: "Cama doble",
+  },
+  {
+    src: Bed,
+    alt: "Cama",
+    title: "Habitación con cama",
+    currency: "USD",
+    price: 100,
+    days: 2,
+    beds: 1,
+    typeOfBed: "Cama doble",
+  },
+  {
+    src: Bed,
+    alt: "Cama",
+    title: "Habitación con cama",
+    currency: "USD",
+    price: 100,
+    days: 2,
+    beds: 1,
+    typeOfBed: "Cama doble",
+  },
+  {
+    src: Bed,
+    alt: "Cama",
+    title: "Habitación con cama",
+    currency: "USD",
+    price: 100,
+    days: 2,
+    beds: 1,
+    typeOfBed: "Cama doble",
+  },
+  {
+    src: Bed,
+    alt: "Cama",
+    title: "Habitación con cama",
+    currency: "USD",
+    price: 100,
+    days: 2,
+    beds: 1,
+    typeOfBed: "Cama doble",
+  },
+  {
+    src: Bed,
+    alt: "Cama",
+    title: "Habitación con cama",
+    currency: "USD",
+    price: 100,
+    days: 2,
+    beds: 1,
+    typeOfBed: "Cama doble",
+  },
+  {
+    src: Bed,
+    alt: "Cama",
+    title: "Habitación con cama",
+    currency: "USD",
+    price: 100,
+    days: 2,
+    beds: 1,
+    typeOfBed: "Cama doble",
+  },
+  {
+    src: Bed,
+    alt: "Cama",
+    title: "Habitación con cama",
+    currency: "USD",
+    price: 100,
+    days: 2,
+    beds: 1,
+    typeOfBed: "Cama doble",
+  },
+  {
+    src: Bed,
+    alt: "Cama",
+    title: "Habitación con cama",
+    currency: "USD",
+    price: 100,
+    days: 2,
+    beds: 1,
+    typeOfBed: "Cama doble",
+  },
+];
+---
+
+<Section class="py-10">
+  <h3 class="text-lg font-medium text-center text-[#DF6951]">Nuestras</h3>
+  <h2 class="font-volkhov text-5xl text-center text-[#181E4B]">Habitaciones</h2>
+  <div class="w-full grid grid-cols-3 gap-4 place-items-center gap-y-10 mt-10">
+    {
+      RoomData.map((room) => (
+        <RoomCard
+          src={room.src}
+          alt={room.alt}
+          title={room.title}
+          currency={room.currency}
+          price={room.price}
+          days={room.days}
+          beds={room.beds}
+          typeOfBed={room.typeOfBed}
+        />
+      ))
+    }
+  </div>
+</Section>
