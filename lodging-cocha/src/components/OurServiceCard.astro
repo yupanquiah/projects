@@ -13,17 +13,17 @@ const { icon, alt, title, description } = Astro.props;
 ---
 
 <article
-  class="flex flex-col items-center border rounded text-center p-4 border-[#5E6282]/30 shadow-md"
+  class="flex flex-col items-center rounded border border-[#5E6282]/30 p-4 text-center shadow-md"
 >
   <header class="relative z-0">
     <Image
-      class="p-2 mb-3 aspect-square object-cover align-middle"
+      class="mb-3 aspect-square object-cover p-2 align-middle"
       width={100}
       src={icon}
       alt={alt}
     />
     <h4 class="text-xl font-semibold text-[#1E1D4C]">{title}</h4>
-    <div class="w-20 h-20 bg-[#FFF1DA] rounded-lg absolute top-0 right-0 -z-10">
+    <div class="absolute right-0 top-0 -z-10 h-20 w-20 rounded-lg bg-[#FFF1DA]">
     </div>
   </header>
   <main class="py-2">

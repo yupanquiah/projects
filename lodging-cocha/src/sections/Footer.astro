@@ -11,13 +11,13 @@ const footerItems = [
 ---
 
 <Section
-  class="py-16 grid grid-cols-1 md:grid-cols-3 gap-8 place-items-center place-content-between font-poppins"
+  class="font-poppins grid grid-cols-1 place-content-between place-items-center gap-8 py-16 md:grid-cols-3"
 >
   <section>
     <Brand class="" />
   </section>
   <section>
-    <h3 class="font-bold text-xl mb-2">Reservas</h3>
+    <h3 class="mb-2 text-xl font-bold">Reservas</h3>
     <ul>
       {
         footerItems.map(({ href, name }) => (
@@ -31,22 +31,22 @@ const footerItems = [
     </ul>
   </section>
   <section class="flex flex-col items-start">
-    <h3 class="font-bold text-xl mb-2">Join Our Newsletter</h3>
+    <h3 class="mb-2 text-xl font-bold">Join Our Newsletter</h3>
     <div class="flex items-center">
       <label>
         <input
           type="email"
-          class="border-0 bg-[#EEEEFF] rounded-l p-2 w-full"
+          class="w-full rounded-l border-0 bg-[#EEEEFF] p-2"
           placeholder="Your email address"
         />
       </label>
       <button
-        class="bg-[#DF6951] text-white font-medium py-2 px-4 rounded-r hover:opacity-90 transition-opacity duration-200"
+        class="rounded-r bg-[#DF6951] px-4 py-2 font-medium text-white transition-opacity duration-200 hover:opacity-90"
       >
         Subscribe
       </button>
     </div>
-    <p class="text-pretty mt-4">
+    <p class="mt-4 text-pretty">
       * Will send you weekly updates for your better tour packages.
     </p>
   </section>

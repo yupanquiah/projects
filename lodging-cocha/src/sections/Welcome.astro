@@ -6,16 +6,16 @@ import Section from "@components/Section.astro";
 import welcomeIllustration from "@assets/welcome-illustration.png";
 ---
 
-<Section class="flex items-center gap-4 font-poppins py-16">
+<Section class="font-poppins flex items-center gap-4 py-16">
   <Image
     src={welcomeIllustration}
     height={500}
     alt="Bienvenido al hospedaje Cocha"
   />
-  <article class="space-y-2 ml-32">
+  <article class="ml-32 space-y-2">
     <h3 class="text-lg font-medium text-[#DF6951]">Bienvenido a</h3>
     <h2 class="font-volkhov text-5xl text-[#181E4B]">Hospedaje Cocha</h2>
-    <p class="text-base text-pretty my-4 mb-8">
+    <p class="my-4 mb-8 text-pretty text-base">
       Et labore harum non nobis ipsum eum molestias mollitia et corporis
       praesentium a laudantium internos. Non quis eius quo eligendi corrupti et
       fugiat nulla qui soluta recusandae in maxime quasi aut ducimus illum aut
@@ -26,7 +26,7 @@ import welcomeIllustration from "@assets/welcome-illustration.png";
     </p>
     <a
       href="#"
-      class="font-medium text-lg py-1.5 px-3 bg-[#DF6951] rounded text-white hover:opacity-90 transition-opacity duration-200"
+      class="rounded bg-[#DF6951] px-3 py-1.5 text-lg font-medium text-white transition-opacity duration-200 hover:opacity-90"
       >Leer más --></a
     >
   </article>

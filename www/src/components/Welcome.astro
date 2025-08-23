@@ -3,7 +3,7 @@ import astroLogo from "../assets/astro.svg";
 import background from "../assets/background.svg";
 ---
 
-<div id="container" class="bg-amber-200 font-n27">
+<div id="container" class="font-n27 bg-amber-200">
   <img id="background" src={background.src} alt="" fetchpriority="high" />
   <main>
     <section id="hero">
@@ -117,8 +117,9 @@ import background from "../assets/background.svg";
   }
 
   pre {
-    font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo,
-      Consolas, "DejaVu Sans Mono", monospace;
+    font-family:
+      ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas,
+      "DejaVu Sans Mono", monospace;
     font-weight: normal;
     background: linear-gradient(14deg, #d83333 0%, #f041ff 100%);
     -webkit-background-clip: text;

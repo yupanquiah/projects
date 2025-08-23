@@ -1,6 +1,6 @@
 // @ts-check
-import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'astro/config';
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
@@ -19,49 +19,48 @@ export default defineConfig({
             style: "normal",
             src: [
               "./src/assets/fonts/n27/n27-bold.woff2",
-              "./src/assets/fonts/n27/n27-bold.woff"
+              "./src/assets/fonts/n27/n27-bold.woff",
             ],
-            display: "swap"
-
+            display: "swap",
           },
           {
             weight: "400",
             style: "normal",
             src: [
               "./src/assets/fonts/n27/n27-regular.woff2",
-              "./src/assets/fonts/n27/n27-regular.woff"
+              "./src/assets/fonts/n27/n27-regular.woff",
             ],
-            display: "swap"
+            display: "swap",
           },
           {
             weight: "300",
             style: "normal",
             src: [
               "./src/assets/fonts/n27/n27-light.woff2",
-              "./src/assets/fonts/n27/n27-light.woff"
+              "./src/assets/fonts/n27/n27-light.woff",
             ],
-            display: "swap"
+            display: "swap",
           },
           {
             weight: "200",
             style: "normal",
             src: [
               "./src/assets/fonts/n27/n27-extralight.woff2",
-              "./src/assets/fonts/n27/n27-extralight.woff"
+              "./src/assets/fonts/n27/n27-extralight.woff",
             ],
-            display: "swap"
+            display: "swap",
           },
           {
             weight: "500",
             style: "normal",
             src: [
               "./src/assets/fonts/n27/n27-medium.woff2",
-              "./src/assets/fonts/n27/n27-medium.woff"
+              "./src/assets/fonts/n27/n27-medium.woff",
             ],
-            display: "swap"
+            display: "swap",
           },
-        ]
-      }
-    ]
-  }
+        ],
+      },
+    ],
+  },
 });

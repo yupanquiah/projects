@@ -21,15 +21,15 @@ const { src, alt, title, currency, price, days, beds, typeOfBed } = Astro.props;
 ---
 
 <section>
-  <header class="bg-[#D86750] rounded-2xl">
+  <header class="rounded-2xl bg-[#D86750]">
     <Image src={src} alt={alt} />
 
-    <h3 class="py-2 font-poppins font-semibold text-xl text-white text-center">
+    <h3 class="font-poppins py-2 text-center text-xl font-semibold text-white">
       Reservar ahora
     </h3>
   </header>
   <main
-    class="flex justify-between py-2 text-base font-poppins text-[#7D7D7D] [&>span]:flex [&>span]:items-center [&>span]:gap-2"
+    class="font-poppins flex justify-between py-2 text-base text-[#7D7D7D] [&>span]:flex [&>span]:items-center [&>span]:gap-2"
   >
     <span>
       <Calender />
@@ -45,7 +45,7 @@ const { src, alt, title, currency, price, days, beds, typeOfBed } = Astro.props;
     </span>
   </main>
   <footer class="flex justify-between">
-    <h4 class="text-2xl font-poppins font-bold">{title}</h4>
+    <h4 class="font-poppins text-2xl font-bold">{title}</h4>
     <div>
       <strong>{currency}</strong>
       <span> {price}</span>
