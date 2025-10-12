@@ -1,26 +1,23 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
+	"github.com/yupanquiah/projects/task-tracker/internal/ui"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "task-cli",
-	Short: "Task Tracker CLI - gestiona tus tareas desde la terminal",
-	Long: `Task Tracker es una herramienta de línea de comandos
-para gestionar tus tareas (todo, in-progress, done)
-utilizando un archivo JSON local.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Usa 'task-cli --help' para ver los comandos disponibles.")
-	},
-}
-
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+func RootCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   ui.Cmd.Render("task"),
+		Short: ui.Cmd.Render("Task Tracker") + " CLI gestiona tus tareas desde la terminal",
 	}
+
+	cmd.AddCommand(AddCmd())
+	cmd.AddCommand(ListCmd())
+	cmd.AddCommand(DeleteCmd())
+	cmd.AddCommand(UpdateCmd())
+	cmd.AddCommand(StatusDoneCmd())
+	cmd.AddCommand(StatusInProgressCmd())
+	cmd.AddCommand(StatusTodoCmd())
+
+	return cmd
 }
