@@ -2,16 +2,28 @@ package tasks
 
 import "time"
 
-type Task struct {
-	ID          int       `json:"id"`
-	Description string    `json:"description"`
-	Status      string    `json:"status"` // "todo", "in-progress", "done"
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
-}
+type TaskStatus string
 
 const (
-	StatusTodo       = "todo"
-	StatusInProgress = "in-progress"
-	StatusDone       = "done"
+	STATUS_TODO        TaskStatus = "todo"
+	STATUS_IN_PROGRESS TaskStatus = "in-progress"
+	STATUS_DONE        TaskStatus = "done"
 )
+
+type Task struct {
+	ID          int64      `json:"id"`
+	Description string     `json:"description"`
+	Status      TaskStatus `json:"status"` // "todo", "in-progress", "done"
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+}
+
+func NewTask(id int64, description string) *Task {
+	return &Task{
+		ID:          id,
+		Description: description,
+		Status:      STATUS_TODO,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+	}
+}
