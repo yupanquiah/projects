@@ -41,7 +41,6 @@ func ReadTasksFromFile() ([]Task, error) {
 	}
 
 	if len(data) == 0 {
-		fmt.Println("File is empty, returning empty task list.")
 		return []Task{}, nil
 	}
 
