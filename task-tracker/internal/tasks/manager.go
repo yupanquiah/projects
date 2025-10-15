@@ -1,149 +1,198 @@
 package tasks
 
 import (
-	"errors"
 	"fmt"
 	"time"
+
+	"github.com/charmbracelet/bubbles/table"
+	"github.com/yupanquiah/projects/task-tracker/internal/ui"
+	UITable "github.com/yupanquiah/projects/task-tracker/internal/ui/table"
+	"github.com/yupanquiah/projects/task-tracker/internal/utils"
 )
 
-func AddTask(description string) error {
-	tasks, err := loadTasks()
-	if err != nil {
-		return err
-	}
+var logger = utils.NewLogger()
 
-	id := 1
-	if len(tasks) > 0 {
-		id = tasks[len(tasks)-1].ID + 1
-	}
-
-	newTask := Task{
-		ID:          id,
-		Description: description,
-		Status:      StatusTodo,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-	}
-
-	tasks = append(tasks, newTask)
-	if err := saveTasks(tasks); err != nil {
-		return err
-	}
-
-	fmt.Printf("Task added successfully (ID: %d)\n", id)
-	return nil
-}
-
-func ListTasks(filter string) error {
-	tasks, err := loadTasks()
+func ListTasks(status TaskStatus) error {
+	tasks, err := ReadTasksFromFile()
 	if err != nil {
 		return err
 	}
 
 	if len(tasks) == 0 {
-		fmt.Println("No hay tareas registradas.")
+		logger.Warn("No tasks found in your list")
 		return nil
 	}
 
-	for _, t := range tasks {
-		if filter == "" || t.Status == filter {
-			fmt.Printf("[%d] %-30s | %-12s | Creado: %s\n",
-				t.ID, t.Description, t.Status, t.CreatedAt.Format("2006-01-02 15:04"))
+	var filteredTasks []Task
+	switch status {
+	case "all":
+		filteredTasks = tasks
+	case STATUS_TODO:
+		for _, task := range tasks {
+			if task.Status == STATUS_TODO {
+				filteredTasks = append(filteredTasks, task)
+			}
+		}
+	case STATUS_IN_PROGRESS:
+		for _, task := range tasks {
+			if task.Status == STATUS_IN_PROGRESS {
+				filteredTasks = append(filteredTasks, task)
+			}
+		}
+	case STATUS_DONE:
+		for _, task := range tasks {
+			if task.Status == STATUS_DONE {
+				filteredTasks = append(filteredTasks, task)
+			}
 		}
 	}
+
+	if len(filteredTasks) == 0 {
+		logger.Warn(fmt.Sprintf("No tasks found with status '%s'", status))
+		return nil
+	}
+
+	taskCount := len(filteredTasks)
+	title := fmt.Sprintf("\nTasks (%s) - %d total\n", status, taskCount)
+	fmt.Println(ui.Title.Render(title))
+
+	columns := []table.Column{
+		{Title: "ID", Width: 5},
+		{Title: "Description", Width: 40},
+		{Title: "Status", Width: 15},
+		{Title: "Updated At", Width: 20},
+	}
+
+	rows := []table.Row{}
+	for _, task := range filteredTasks {
+		rows = append(rows, table.Row{
+			fmt.Sprintf("%d", task.ID),
+			task.Description,
+			string(task.Status),
+			task.UpdatedAt.Format("2006-01-02 15:04:05"),
+		})
+	}
+
+	UITable.Create(columns, rows)
 	return nil
 }
 
-func UpdateTask(id int, newDesc string) error {
-	tasks, err := loadTasks()
+func TaskStatusFromString(status string) TaskStatus {
+	switch status {
+	case "todo":
+		return STATUS_TODO
+	case "in-progress":
+		return STATUS_IN_PROGRESS
+	case "done":
+		return STATUS_DONE
+	default:
+		return "all"
+	}
+}
+
+func AddTask(description string) error {
+	tasks, err := ReadTasksFromFile()
 	if err != nil {
 		return err
 	}
 
-	found := false
-	for i := range tasks {
-		if tasks[i].ID == id {
-			tasks[i].Description = newDesc
-			tasks[i].UpdatedAt = time.Now()
-			found = true
-			break
-		}
+	var newTaskId int64
+	if len(tasks) > 0 {
+		lastTask := tasks[len(tasks)-1]
+		newTaskId = lastTask.ID + 1
+	} else {
+		newTaskId = 1
 	}
 
-	if !found {
-		return errors.New("tarea no encontrada")
-	}
+	task := NewTask(newTaskId, description)
+	tasks = append(tasks, *task)
 
-	if err := saveTasks(tasks); err != nil {
-		return err
-	}
+	formattedId := ui.Id.Render(fmt.Sprintf("(ID: %d)", task.ID))
+	logger.Info(fmt.Sprintf("Task added successfully %s", formattedId))
 
-	fmt.Printf("Task %d updated successfully\n", id)
-	return nil
+	return WriteTasksToFile(tasks)
 }
 
-func DeleteTask(id int) error {
-	tasks, err := loadTasks()
+func DeleteTask(id int64) error {
+	tasks, err := ReadTasksFromFile()
 	if err != nil {
 		return err
 	}
 
-	newTasks := []Task{}
-	found := false
-	for _, t := range tasks {
-		if t.ID != id {
-			newTasks = append(newTasks, t)
-		} else {
-			found = true
+	var updatedTasks []Task
+	for _, task := range tasks {
+		if task.ID != id {
+			updatedTasks = append(updatedTasks, task)
 		}
 	}
 
-	if !found {
-		return errors.New("tarea no encontrada")
+	if len(updatedTasks) == len(tasks) {
+		logger.Error(fmt.Sprintf("Task not found (ID: %d)", id))
+		return nil
 	}
 
-	if err := saveTasks(newTasks); err != nil {
-		return err
-	}
-
-	fmt.Printf("Task %d deleted successfully\n", id)
-	return nil
+	formattedId := ui.Id.Render(fmt.Sprintf("(ID: %d)", id))
+	logger.Info(fmt.Errorf("Task deleted successfully %s", formattedId))
+	return WriteTasksToFile(updatedTasks)
 }
 
-func MarkTask(id int, status string) error {
-	tasks, err := loadTasks()
+func UpdateTaskStatus(id int64, status TaskStatus) error {
+	tasks, err := ReadTasksFromFile()
 	if err != nil {
 		return err
 	}
 
-	validStatus := map[string]bool{
-		StatusTodo:       true,
-		StatusInProgress: true,
-		StatusDone:       true,
-	}
-
-	if !validStatus[status] {
-		return errors.New("estado inválido")
-	}
-
-	found := false
-	for i := range tasks {
-		if tasks[i].ID == id {
-			tasks[i].Status = status
-			tasks[i].UpdatedAt = time.Now()
-			found = true
-			break
+	var taskExists bool = false
+	var updatedTasks []Task
+	for _, task := range tasks {
+		if task.ID == id {
+			taskExists = true
+			switch status {
+			case STATUS_TODO:
+				task.Status = STATUS_TODO
+			case STATUS_IN_PROGRESS:
+				task.Status = STATUS_IN_PROGRESS
+			case STATUS_DONE:
+				task.Status = STATUS_DONE
+			}
+			task.UpdatedAt = time.Now()
 		}
+		updatedTasks = append(updatedTasks, task)
 	}
 
-	if !found {
-		return errors.New("tarea no encontrada")
+	if !taskExists {
+		logger.Error(fmt.Errorf("Task not found (ID: %d)", id))
+		return nil
 	}
 
-	if err := saveTasks(tasks); err != nil {
+	formattedId := ui.Id.Render(fmt.Sprintf("(ID: %d)", id))
+	logger.Info(fmt.Sprintf("Task updated successfully: %s", formattedId))
+	return WriteTasksToFile(updatedTasks)
+}
+
+func UpdateTaskDescription(id int64, description string) error {
+	tasks, err := ReadTasksFromFile()
+	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Task %d marked as %s\n", id, status)
-	return nil
+	var taskExists bool = false
+	var updatedTasks []Task
+	for _, task := range tasks {
+		if task.ID == id {
+			taskExists = true
+			task.Description = description
+			task.UpdatedAt = time.Now()
+		}
+		updatedTasks = append(updatedTasks, task)
+	}
+
+	if !taskExists {
+		logger.Error(fmt.Errorf("Task not found (ID: %d)", id))
+		return nil
+	}
+
+	formattedId := ui.Id.Render(fmt.Sprintf("(ID: %d)", id))
+	logger.Info(fmt.Errorf("Task updated successfully: %s", formattedId))
+	return WriteTasksToFile(updatedTasks)
 }
