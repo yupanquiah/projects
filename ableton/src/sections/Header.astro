@@ -1,0 +1,171 @@
+---
+import Ableton from "@assets/ableton.svg";
+
+const ITEMS = [
+  { name: "Live", link: "#" },
+  { name: "Push", link: "#" },
+  { name: "Move", link: "#" },
+  { name: "Note", link: "#" },
+  { name: "Link", link: "#" },
+  { name: "Shop", link: "#" },
+  { name: "Packs", link: "#" },
+  { name: "Help", link: "#" },
+  { name: "More", link: "#" },
+  { name: "Try Live 12 for free", link: "#" },
+  { name: "Log in or register", link: "#" },
+];
+
+const SECONDARY_ITEMS = [
+  { name: "About", link: "#" },
+  { name: "Jobs", link: "#" },
+  { name: "Apprenticeships", link: "#" },
+];
+---
+
+<header>
+  <nav class="primary">
+    <a href="/">
+      <Ableton />
+    </a>
+    <ul>
+      {
+        ITEMS.map((item) => (
+          <li>
+            <a href={item.link}>{item.name}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+  <div class="separator"></div>
+</header>
+<header>
+  <nav class="secondary">
+    <ul>
+      {
+        SECONDARY_ITEMS.map((item) => (
+          <li>
+            <a href={item.link}>{item.name}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+    z-index: 9999;
+
+    nav {
+      display: flex;
+      align-items: center;
+
+      a {
+        margin-left: 2.5rem;
+        margin-right: 2em;
+        margin-bottom: 1.25rem;
+
+        svg {
+          display: block;
+          height: 1.75em;
+          width: 3.75em;
+        }
+      }
+
+      ul {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.25rem;
+        padding-right: 2.5rem;
+
+        li {
+          list-style: none;
+          padding-left: 0.625rem;
+          padding-right: 0.625rem;
+          display: inline-block;
+          margin-left: 0.625rem;
+          margin-right: 0.625rem;
+
+          a {
+            margin: 0;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: bold;
+          }
+        }
+      }
+
+      &.primary {
+        ul {
+          li:nth-last-child(2) {
+            margin-left: auto;
+            margin-right: 0;
+
+            a {
+              font-weight: bold;
+              color: var(--color-blue);
+            }
+          }
+
+          li:last-child {
+            padding-right: 0;
+            margin-right: 0;
+
+            a {
+              font-size: 16px;
+              color: var(--color-black);
+            }
+          }
+
+          li:first-child {
+            margin-left: 0;
+          }
+        }
+      }
+    }
+
+    .separator {
+      border: 2px solid var(--color-separator);
+    }
+
+    nav.secondary {
+      ul {
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+        width: 100%;
+        padding-top: 0.3rem;
+        padding-bottom: 0.3rem;
+
+        li {
+          padding-left: 0.5rem;
+          padding-right: 0.5rem;
+          display: inline-flex;
+
+          a {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-black);
+          }
+        }
+
+        li:first-child {
+          margin-left: 0rem;
+          padding-left: 0;
+          a {
+            color: var(--color-orange);
+          }
+        }
+      }
+    }
+  }
+</style>

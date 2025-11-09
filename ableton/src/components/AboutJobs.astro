@@ -1,0 +1,68 @@
+---
+import ChevronRight from "@icons/chevron-right.svg";
+import AboutJobsImg from "@imgs/photo-8.jpg";
+---
+
+<section>
+  <img
+    src={AboutJobsImg.src}
+    alt="People working together in an office"
+    loading="lazy"
+  />
+  <div>
+    <h2>
+      We’re really proud of the work we’ve done so far. But there’s so much more
+      to come. If you’d like to be a part of it, please join us.
+      <a href="#">
+        See latest jobs
+
+        <ChevronRight aria-hidden="true" />
+      </a>
+    </h2>
+  </div>
+</section>
+
+<style>
+  section {
+    display: flex;
+    margin-left: 8.33rem;
+    margin-right: 8.33rem;
+
+    img {
+      object-fit: cover;
+      object-position: 50% 50%;
+
+      width: 50%;
+      height: auto;
+    }
+
+    div {
+      width: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8.3rem;
+      background-color: var(--color-blue-light);
+
+      h2 {
+        font-weight: bold;
+        font-size: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        a {
+          display: inline-flex;
+          align-items: center;
+          color: var(--color-blue);
+          margin-top: 1em;
+          text-decoration: none;
+
+          svg {
+            stroke: var(--color-blue);
+          }
+        }
+      }
+    }
+  }
+</style>
