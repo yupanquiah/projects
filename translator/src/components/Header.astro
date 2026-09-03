@@ -1,0 +1,56 @@
+---
+import Section from "./Section.astro";
+
+import Language from "../assets/icons/language.svg";
+---
+
+<header>
+  <Section
+    ><h1>
+      <a href=""><Language /></a>
+      Traductor
+    </h1></Section
+  >
+</header>
+
+<style>
+  header {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    background: rgba(24, 24, 27, 0.5);
+    backdrop-filter: blur(6px);
+
+    section {
+      align-self: stretch;
+      padding: 1rem;
+      display: flex;
+
+      h1 {
+        font-weight: 500;
+        font-size: 1.25rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        a {
+          display: flex;
+          width: 36px;
+          height: 36px;
+          justify-content: center;
+          align-items: center;
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.06);
+          box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.05) inset;
+
+          svg {
+            color: #d4d4d8;
+            stroke-width: 1.5px;
+          }
+        }
+      }
+    }
+  }
+</style>
