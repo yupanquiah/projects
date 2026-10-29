@@ -1,0 +1,20 @@
+---
+import Nav from "../components/Nav.astro";
+import Section from "../components/Section.astro";
+import TranslatorApp from "../components/TranslatorApp.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <Section>
+    <Nav />
+    <TranslatorApp client:load />
+  </Section>
+</Layout>
+
+<style>
+  & section {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+</style>

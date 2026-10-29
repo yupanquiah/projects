@@ -1,0 +1,57 @@
+---
+import Section from "./Section.astro";
+---
+
+<footer>
+  <div></div>
+  <div></div>
+  <Section> 2026 </Section>
+</footer>
+
+<style>
+  footer {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+
+    div {
+      position: absolute;
+
+      &:first-of-type {
+        top: 0;
+        width: 100%;
+        height: 1px;
+        z-index: 20;
+        inset-inline: 0;
+        background-image: linear-gradient(
+          to right,
+          transparent,
+          rgba(255, 255, 255, 0.25),
+          transparent
+        );
+      }
+
+      &:last-of-type {
+        pointer-events: none;
+        right: -1rem;
+        bottom: -10rem;
+        width: 24rem;
+        height: 24rem;
+        border-radius: 9999px;
+        filter: blur(100px);
+        opacity: 0.4;
+        background: conic-gradient(
+          from 200deg,
+          #008aff,
+          #f7a442,
+          #e942f7,
+          #008aff
+        );
+      }
+    }
+
+    section {
+      padding: 2rem 1rem;
+    }
+  }
+</style>

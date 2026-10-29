@@ -1,0 +1,331 @@
+---
+import Section from "./Section.astro";
+---
+
+<div class="translator">
+  <div class="controls">
+    <div class="lang-group">
+      <label>
+        <span>De</span>
+        <select id="fromLang">
+          <option value="auto">Detectar idioma</option>
+          <option value="en">Inglés</option>
+          <option value="es">Español</option>
+          <option value="fr">Francés</option>
+          <option value="de">Alemán</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Portugués</option>
+          <option value="ja">Japonés</option>
+          <option value="ko">Coreano</option>
+          <option value="zh">Chino</option>
+          <option value="ru">Ruso</option>
+        </select>
+      </label>
+      <button id="swapBtn" class="swap" aria-label="Intercambiar idiomas">⇄</button>
+      <label>
+        <span>A</span>
+        <select id="toLang">
+          <option value="es">Español</option>
+          <option value="en">Inglés</option>
+          <option value="fr">Francés</option>
+          <option value="de">Alemán</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Portugués</option>
+          <option value="ja">Japonés</option>
+          <option value="ko">Coreano</option>
+          <option value="zh">Chino</option>
+          <option value="ru">Ruso</option>
+        </select>
+      </label>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <textarea id="source" placeholder="Escribe o pega texto para traducir..." aria-label="Texto a traducir"></textarea>
+      <div class="panel-footer">
+        <span id="charCount">0 caracteres</span>
+        <button id="translateBtn" class="translate">Traducir</button>
+      </div>
+    </div>
+    <div class="panel">
+      <textarea id="target" placeholder="Traducción..." readonly aria-label="Texto traducido"></textarea>
+      <div class="panel-footer">
+        <span id="targetInfo"></span>
+        <button id="copyBtn" class="copy" aria-label="Copiar traducción">Copiar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const source = document.getElementById('source') as HTMLTextAreaElement;
+  const target = document.getElementById('target') as HTMLTextAreaElement;
+  const fromLang = document.getElementById('fromLang') as HTMLSelectElement;
+  const toLang = document.getElementById('toLang') as HTMLSelectElement;
+  const translateBtn = document.getElementById('translateBtn') as HTMLButtonElement;
+  const swapBtn = document.getElementById('swapBtn') as HTMLButtonElement;
+  const copyBtn = document.getElementById('copyBtn') as HTMLButtonElement;
+  const statusEl = document.getElementById('status') as HTMLDivElement;
+  const charCount = document.getElementById('charCount') as HTMLSpanElement;
+  const targetInfo = document.getElementById('targetInfo') as HTMLSpanElement;
+
+  let translator: any = null;
+  let useBuiltIn = false;
+
+  source.addEventListener('input', () => {
+    charCount.textContent = `${source.value.length} caracteres`;
+  });
+
+  swapBtn.addEventListener('click', () => {
+    if (fromLang.value === 'auto') return;
+    const temp = fromLang.value;
+    fromLang.value = toLang.value;
+    toLang.value = temp;
+    if (source.value && target.value) {
+      const t = source.value;
+      source.value = target.value;
+      target.value = t;
+      charCount.textContent = `${source.value.length} caracteres`;
+    }
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(target.value);
+      const old = copyBtn.textContent;
+      copyBtn.textContent = 'Copiado!';
+      setTimeout(() => (copyBtn.textContent = old), 1200);
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  async function initBuiltIn() {
+    try {
+      // @ts-ignore
+      if (typeof Translator === 'undefined') return false;
+      // @ts-ignore
+      const availability = await Translator.availability({ sourceLanguage: fromLang.value === 'auto' ? undefined : fromLang.value, targetLanguage: toLang.value });
+      if (availability === 'unavailable') return false;
+      if (availability === 'downloadable' || availability === 'downloading') {
+        statusEl.textContent = 'Descargando modelo de traducción...';
+      }
+      // @ts-ignore
+      translator = await Translator.create({ 
+        sourceLanguage: fromLang.value === 'auto' ? 'en' : fromLang.value, // Chrome may need explicit; we'll handle
+        targetLanguage: toLang.value,
+        monitor(m: any) {
+          m.addEventListener('downloadprogress', (e: any) => {
+            statusEl.textContent = `Descargando modelo... ${(e.loaded * 100).toFixed(0)}%`;
+          });
+        }
+      });
+      statusEl.textContent = 'Usando traducción local (Chrome Built-in AI)';
+      useBuiltIn = true;
+      return true;
+    } catch (e) {
+      console.warn('Built-in translator failed:', e);
+      return false;
+    }
+  }
+
+  async function translateWithBuiltIn(text: string) {
+    if (!translator) {
+      const ok = await initBuiltIn();
+      if (!ok) throw new Error('no-built-in');
+    }
+    // If source is auto, try to detect? Chrome Translator may expect sourceLanguage; for now pass as-is
+    // @ts-ignore
+    const result = await translator.translate(text);
+    return result;
+  }
+
+  async function translateWithExternal(text: string) {
+    const apiUrl = (import.meta.env.PUBLIC_TRANSLATE_API_URL as string) || 'https://libretranslate.de/translate';
+    const from = fromLang.value === 'auto' ? 'auto' : fromLang.value;
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        q: text,
+        source: from,
+        target: toLang.value,
+        format: 'text'
+      })
+    });
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const data = await res.json();
+    return data.translatedText || data.translation || data.result || '';
+  }
+
+  translateBtn.addEventListener('click', async () => {
+    const text = source.value.trim();
+    if (!text) return;
+    translateBtn.disabled = true;
+    translateBtn.textContent = 'Traduciendo...';
+    statusEl.textContent = '';
+    targetInfo.textContent = '';
+    try {
+      let result = '';
+      if (useBuiltIn && translator) {
+        try {
+          result = await translateWithBuiltIn(text);
+        } catch (e) {
+          console.warn('built-in failed, trying external', e);
+          useBuiltIn = false;
+          translator = null;
+          result = await translateWithExternal(text);
+          statusEl.textContent = 'Usando API externa (fallback)';
+        }
+      } else {
+        const ok = await initBuiltIn();
+        if (ok) {
+          try {
+            result = await translateWithBuiltIn(text);
+          } catch (e) {
+            result = await translateWithExternal(text);
+            statusEl.textContent = 'Usando API externa (fallback)';
+          }
+        } else {
+          result = await translateWithExternal(text);
+          statusEl.textContent = 'Usando API externa (fallback)';
+        }
+      }
+      target.value = result;
+      targetInfo.textContent = `${fromLang.value === 'auto' ? 'auto' : fromLang.value} → ${toLang.value}`;
+    } catch (e) {
+      console.error(e);
+      statusEl.textContent = 'Error al traducir. Revisa consola.';
+    } finally {
+      translateBtn.disabled = false;
+      translateBtn.textContent = 'Traducir';
+    }
+  });
+
+  // Try to init on load if possible
+  initBuiltIn();
+</script>
+
+<style>
+  .translator {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .lang-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .lang-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #d4d4d8;
+  }
+
+  .lang-group select {
+    background: rgba(255, 255, 255, 0.06);
+    color: #f4f4f5;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    padding: 0.375rem 0.75rem;
+    font-family: var(--geist-sans);
+  }
+
+  .swap {
+    background: rgba(255, 255, 255, 0.06);
+    color: #f4f4f5;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    padding: 0.375rem 0.75rem;
+    cursor: pointer;
+  }
+
+  .status {
+    color: #a1a1aa;
+    font-size: 0.875rem;
+    min-height: 1.25rem;
+  }
+
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .panels {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    overflow: hidden;
+    backdrop-filter: blur(6px);
+  }
+
+  .panel textarea {
+    width: 100%;
+    min-height: 200px;
+    background: transparent;
+    color: #f4f4f5;
+    border: none;
+    padding: 1rem;
+    font-family: var(--geist-sans);
+    font-size: 1rem;
+    resize: vertical;
+    field-sizing: content;
+  }
+
+  .panel textarea:focus {
+    outline: none;
+  }
+
+  .panel textarea[readonly] {
+    color: #e4e4e7;
+  }
+
+  .panel-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #a1a1aa;
+    font-size: 0.875rem;
+  }
+
+  .translate,
+  .copy {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f4f4f5;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    padding: 0.375rem 0.875rem;
+    cursor: pointer;
+    font-family: var(--geist-sans);
+  }
+
+  .translate:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+</style>
