@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
+    "fmt:check": "oxfmt --check",
+    "clean": "rm -rf node_modules packages/*/node_modules apps/*/node_modules bun.lockb packages/*/bun.lockb apps/*/bun.lockb"
   },
   "devDependencies": {
     "oxfmt": "0.75.0",
