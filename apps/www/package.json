@@ -10,7 +10,13 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "4.1.12",
-    "astro": "^5.13.2",
+    "astro": "7.4.7",
     "tailwindcss": "4.1.12"
+  },
+  "engines": {
+    "node": ">=26.13.0"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }
